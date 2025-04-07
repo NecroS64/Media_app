@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreatePostFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btnPickDateL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Выбрать дату" />
+
+                <TextView
+                    android:id="@+id/tvSelectedDateL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Выбранная дата" />
+
+                <Button
+                    android:id="@+id/btnPickTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Выбрать время" />
+
+                <TextView
+                    android:id="@+id/tvSelectedTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Выбранное время" />
+
+                <EditText
+                    android:id="@+id/Copy_name"
+                    android:layout_width="291dp"
+                    android:layout_height="56dp"
+                    android:ems="10"
+                    android:hint="Введи имя копирайтера из КП"
+                    android:inputType="text"
+                    app:layout_constraintBottom_toTopOf="@+id/textView" />
+
+                <EditText
+                    android:id="@+id/Desi_name"
+                    android:layout_width="291dp"
+                    android:layout_height="56dp"
+                    android:ems="10"
+                    android:hint="Введи имя дизайнера из КП"
+                    android:inputType="text"
+                    app:layout_constraintBottom_toTopOf="@+id/textView" />
+
+                <EditText
+                    android:id="@+id/Theme_name"
+                    android:layout_width="291dp"
+                    android:layout_height="56dp"
+                    android:ems="10"
+                    android:hint="Введи тему"
+                    android:inputType="text"
+                    app:layout_constraintBottom_toTopOf="@+id/textView" />
+
+                <EditText
+                    android:id="@+id/description_name"
+                    android:layout_width="291dp"
+                    android:layout_height="56dp"
+                    android:ems="10"
+                    android:hint="Введи описание"
+                    android:inputType="text"
+                    app:layout_constraintBottom_toTopOf="@+id/textView" />
+
+                <EditText
+                    android:id="@+id/tags_name"
+                    android:layout_width="291dp"
+                    android:layout_height="56dp"
+                    android:ems="10"
+                    android:hint="Введи тэги"
+                    android:inputType="text"
+                    app:layout_constraintBottom_toTopOf="@+id/textView" />
+
+                <EditText
+                    android:id="@+id/Picture_name"
+                    android:layout_width="291dp"
+                    android:layout_height="56dp"
+                    android:ems="10"
+                    android:hint="Введи описание картинки"
+                    android:inputType="text"
+                    app:layout_constraintBottom_toTopOf="@+id/textView" />
+
+                <Switch
+                    android:id="@+id/switchNotify"
+                    android:layout_width="292dp"
+                    android:layout_height="56dp"
+                    android:text="Уведомить"
+                    tools:checked="false" />
+
+                <RadioButton
+                    android:id="@+id/radioNotify"
+                    android:layout_width="298dp"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:text="Уведомить" />
+
+                <Button
+                    android:id="@+id/button_finish"
+                    android:layout_width="316dp"
+                    android:layout_height="wrap_content"
+                    android:text="Создать пост" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.media_app.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_postFragment2"
+            app:destination="@id/postFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postFragment"
+        android:name="com.example.media_app.PostFragment"
+        android:label="fragment_post"
+        tools:layout="@layout/fragment_post" >
+        <action
+            android:id="@+id/action_postFragment_to_peopleFragment"
+            app:destination="@id/peopleFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/peopleFragment"
+        android:name="com.example.media_app.PeopleFragment"
+        android:label="fragment_people"
+        tools:layout="@layout/fragment_people" >
+        <action
+            android:id="@+id/action_peopleFragment_to_postFragment2"
+            app:destination="@id/postFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_peopleFragment_to_createPeopleFragment"
+            app:destination="@id/createPeopleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPeopleFragment"
+        android:name="com.example.media_app.CreatePeopleFragment"
+        android:label="fragment_create_people"
+        tools:layout="@layout/fragment_create_people" >
+        <action
+            android:id="@+id/action_createPeopleFragment_to_peopleFragment2"
+            app:destination="@id/peopleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPostFragment"
+        android:name="com.example.media_app.CreatePostFragment"
+        android:label="fragment_create_post"
+        tools:layout="@layout/fragment_create_post" >
+        <action
+            android:id="@+id/action_createPostFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
+</navigation>

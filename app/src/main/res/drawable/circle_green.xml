@@ -1,0 +1,10 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#00FF00" /> <!-- Задайте цвет кружочка -->
+    <stroke android:color="#000000"
+        android:width="0.1dp" />   <!-- Ширина границы -->
+    <!-- Цвет границы (красный) -->
+    <size
+        android:width="20dp"
+        android:height="20dp" /> <!-- Размер кружочка -->
+</shape>

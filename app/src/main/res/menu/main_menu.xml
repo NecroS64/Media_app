@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/postFragment"
+        android:icon="@drawable/ic_postt"
+        android:title="Посты" />
+    <item
+        android:id="@+id/peopleFragment"
+        android:icon="@drawable/ic_people"
+        android:title="Рабы"
+        tools:ignore="DuplicateIds" />
+</menu>
