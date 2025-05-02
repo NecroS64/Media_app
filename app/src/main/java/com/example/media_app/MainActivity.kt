@@ -1,12 +1,14 @@
 package com.example.media_app
 
 import TcpClient
+import WebSocketClient
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,15 +19,16 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.json.JSONObject
 
 
 interface OnResponseReceivedListener {
     fun onResponseReceived(response: String)
 }
 
-val ip_local = "192.168.2.42"
-val ip_server = "138.124.109.92"
-val ip_plata = "77.239.102.17"
+val ip_local = "192.168.1.112"
+//val ip_server = "138.124.109.92"
+val ip_server = "77.239.102.17"
 val ip_me = "192.168.2.114"
 //var pvm
 
@@ -33,11 +36,29 @@ val ip_me = "192.168.2.114"
 
 
 class MainActivity : AppCompatActivity() {
-    public  var pvm=PostViewModel()
+    private val viewModel: MainViewModel by viewModels()
     var flag_menu :Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+        var serverIp = ip_local // IP адрес сервера
+        var serverPort = 3749
+        val Client = WebSocketClient()
+        val postRepository = PostRepository(Client)
+        val peopleRepository = PeopleRepository(Client)
+        val handler = MessageHandler(postRepository,peopleRepository)
+        viewModel.setHandler(handler)
+        viewModel.connectToServer(serverIp, serverPort)
+        //viewModel.sendMessage("сервер!")
+        viewModel.posts.observe(this) { message ->
+            Log.d("MyTag", "Получено: $message")
+            // Обнови UI здесь
+        }
+
+        viewModel.connectionState.observe(this) { connected ->
+            Log.d("MainActivity", "Состояние подключения: $connected")
+        }
+
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         //val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
@@ -67,21 +88,32 @@ class MainActivity : AppCompatActivity() {
         findViewById<BottomNavigationView>(R.id.bottom_nav).visibility=View.VISIBLE
     }
     fun hide_menu(){
-        Log.d("Mytag_menu","enable")
+        Log.d("Mytag_menu","disable")
         flag_menu =true
         findViewById<BottomNavigationView>(R.id.bottom_nav).visibility=View.GONE
     }
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.menu_toolbar,menu)
-//        return super.onCreateOptionsMenu(menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        val navController = findNavController(R.id.nav_host_fragment)
-//        return item.onNavDestinationSelected(navController)
-//                || super.onOptionsItemSelected(item)
-//    }
-    companion object {
-    val pvm = PostViewModel()
-}
+    fun change_TCP_server(ip: String )
+    {
+        viewModel.disconnect()
+        val serverPort = 3749         // Порт сервера
+        viewModel.connectToServer(ip,serverPort)
+    }
+
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.disconnect()
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return item.onNavDestinationSelected(navController)
+                || super.onOptionsItemSelected(item)
+    }
+
 }

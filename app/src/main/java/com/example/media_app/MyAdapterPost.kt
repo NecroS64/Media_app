@@ -1,10 +1,13 @@
 package com.example.media_app
 
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +15,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.drawable.toDrawable
 import androidx.navigation.findNavController
 
-class MyAdapterPost(val data: MutableList<Post>) : RecyclerView.Adapter<MyAdapterPost.MyViewHolder>() {
+class MyAdapterPost(var data: List<Post>) : RecyclerView.Adapter<MyAdapterPost.MyViewHolder>() {
+    private var expandedPosition: Int? = null
+
     class MyViewHolder(val row: View) : RecyclerView.ViewHolder(row) {
         val design = row.findViewById<TextView>(R.id.desi_val)
         val copy = row.findViewById<TextView>(R.id.copy_val)
@@ -23,8 +28,8 @@ class MyAdapterPost(val data: MutableList<Post>) : RecyclerView.Adapter<MyAdapte
         val date = row.findViewById<TextView>(R.id.date_val)
         val copy_st = row.findViewById<View>(R.id.copy_status)
         val desi_st = row.findViewById<View>(R.id.desi_status)
-
-        //val photo = photoImport()
+        val body = row.findViewById<LinearLayout>(R.id.templ)
+        val dopBut = row.findViewById<LinearLayout>(R.id.dopButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyAdapterPost.MyViewHolder {
@@ -34,42 +39,87 @@ class MyAdapterPost(val data: MutableList<Post>) : RecyclerView.Adapter<MyAdapte
     }
 
     override fun onBindViewHolder(holder: MyAdapterPost.MyViewHolder, position: Int) {
-        val context = holder.itemView.context
-        val post = data[position]
-        holder.design.setText(post.designer)
-        holder.copy.setText(post.copywritter)
-        holder.theme.setText(post.theme)
-        holder.date.setText(post.date)
-        holder.description.setText(post.add_info)
-//        holder.tag.setText(post.tags)
-        holder.time.setText(post.time)
-        if(post.text_status==0)
-            holder.copy_st.setBackgroundResource(R.drawable.circle_red)
-        if(post.text_status==1)
-            holder.copy_st.setBackgroundResource(R.drawable.circle_yellow)
-        if(post.text_status==2)
-            holder.copy_st.setBackgroundResource(R.drawable.circle_green)
-        if(post.pict_status==0)
-            holder.desi_st.setBackgroundResource(R.drawable.circle_red)
-        if(post.pict_status==1)
-            holder.desi_st.setBackgroundResource(R.drawable.circle_yellow)
-        if(post.pict_status==2)
-            holder.desi_st.setBackgroundResource(R.drawable.circle_green)
-        //holder.desc.text = data[position].name
+        if (data.isNotEmpty()) {
+            val actualPosition = holder.adapterPosition
+            val isExpanded = actualPosition == expandedPosition
 
-//        holder.desc.setOnClickListener{
-//            Log.d("mytagadapter"," hobby click on button " + position.toString())
-//            val message = position.toString()
-//            val action = HobbyFragmentDirections
-//                .actionHobbyFragmentToPlaceFragment(message)
-//            holder.view.findNavController().navigate(action)
-//        }
+            // Анимация расширения или сворачивания
+            animateExpandableView(holder.dopBut, isExpanded)
+
+            // Заполнение данных
+            val post = data[position]
+            holder.design.text = post.designer
+            holder.copy.text = post.copywritter
+            holder.theme.text = post.theme
+            holder.date.text = post.date
+            holder.description.text = post.add_info
+            holder.time.text = post.time
+
+            // Изменение статуса
+            setStatus(holder.copy_st, post.text_status)
+            setStatus(holder.desi_st, post.pict_status)
+
+            // Обработчик клика для раскрытия/сворачивания
+            holder.itemView.setOnClickListener {
+                val previousExpanded = expandedPosition
+                if (isExpanded) {
+                    expandedPosition = null
+                } else {
+                    expandedPosition = actualPosition
+                }
+                notifyItemChanged(actualPosition)
+                previousExpanded?.let { notifyItemChanged(it) }
+            }
+        }
     }
 
-    override fun getItemCount(): Int = data.size
+    private fun animateExpandableView(dopBut: LinearLayout, isExpanded: Boolean) {
+        if (isExpanded) {
+            dopBut.visibility = View.VISIBLE
+            dopBut.measure(
+                View.MeasureSpec.makeMeasureSpec(dopBut.width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            val targetHeight = dopBut.measuredHeight
+//            val targetHeight = 126
+            Log.d("MyTag_Anim","targetHeight = $targetHeight")
 
-    public fun addItem() {
-        //data.add(newItem)  // Добавляем элемент в список
-        notifyItemInserted(data.size ) // Обновляем RecyclerView
+            dopBut.layoutParams.height = 0
+
+            val animator = ValueAnimator.ofInt(0, targetHeight)
+            animator.addUpdateListener { animation ->
+                dopBut.layoutParams.height = animation.animatedValue as Int
+                dopBut.requestLayout()
+            }
+            animator.duration = 300
+            animator.start()
+        } else {
+            val currentHeight = dopBut.height
+            val animator = ValueAnimator.ofInt(currentHeight, 0)
+            animator.addUpdateListener { animation ->
+                dopBut.layoutParams.height = animation.animatedValue as Int
+                dopBut.requestLayout()
+            }
+            animator.duration = 300
+            animator.start()
+        }
+    }
+
+    private fun setStatus(view: View, status: Int) {
+        when (status) {
+            0 -> view.setBackgroundResource(R.drawable.circle_red)
+            1 -> view.setBackgroundResource(R.drawable.circle_yellow)
+            2 -> view.setBackgroundResource(R.drawable.circle_green)
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(newData: List<Post>) {
+        data = newData
+        notifyDataSetChanged() // Для оптимизации используйте DiffUtil
     }
 }

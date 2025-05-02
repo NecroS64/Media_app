@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -28,6 +29,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class CreatePostFragment : Fragment() {
+    private val viewModel: MainViewModel by activityViewModels()
     // TODO: Rename and change types of parameters
     private lateinit var btnPickDate: Button
     private lateinit var tvSelectedDate: TextView
@@ -50,7 +52,7 @@ class CreatePostFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_create_post, container, false)
         if (activity != null && !requireActivity().isFinishing) {
-            (activity as MainActivity).hide_menu()
+            //(activity as MainActivity).hide_menu()
         }
         btnPickDate = view.findViewById<Button>(R.id.btnPickDateL)
         btnPickDate = view.findViewById(R.id.btnPickDateL)
@@ -166,7 +168,8 @@ class CreatePostFragment : Fragment() {
 
         json.put("Post values",values)
         Log.d("MytagCreatePost",json.toString())
-        tcpClient.sendJson(json.toString())
+            //tcpClient.sendJson(json.toString())
+        viewModel.sendMessage(json.toString())
 
     }
 }

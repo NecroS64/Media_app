@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.okhttp)
 //    implementation(libs.androidx.navigation)
 //    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.ui.ktx)
