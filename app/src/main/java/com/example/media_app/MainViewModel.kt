@@ -164,6 +164,51 @@ class MainViewModel(
             }
         }
     }
+    fun deletePost(id: Int){
+        viewModelScope.launch {
+            try {
+                Log.d("MyTag_mainViewModel","Delete post $id")
+                val json = JSONObject()
+                json.put("Command", "delete post")
+                json.put("id",id)
+                messageHandler.send(json.toString())
+
+            } catch (e: Exception) {
+                Log.d("MyTag_mainViewModel", "error send")
+                Log.d("MyTag_mainViewModel", "Ошибка отправки: ${e.message}")
+            }
+        }
+    }
+    fun updatePost(post: Post){
+        viewModelScope.launch {
+            try {
+                Log.d("MyTag_mainViewModel","Update post ${post.id}")
+                val json = JSONObject()
+                json.put("Command", "update post")
+                //TODO
+                messageHandler.send(json.toString())
+
+            } catch (e: Exception) {
+                Log.d("MyTag_mainViewModel", "error send")
+                Log.d("MyTag_mainViewModel", "Ошибка отправки: ${e.message}")
+            }
+        }
+    }
+    fun acceptPost(id: Int){
+        viewModelScope.launch {
+            try {
+                Log.d("MyTag_mainViewModel","comlpete post $id")
+                val json = JSONObject()
+                json.put("Command", "comlpete post")
+                json.put("id",id)
+                messageHandler.send(json.toString())
+
+            } catch (e: Exception) {
+                Log.d("MyTag_mainViewModel", "error send")
+                Log.d("MyTag_mainViewModel", "Ошибка отправки: ${e.message}")
+            }
+        }
+    }
     fun disconnect() {
         messageHandler.disconnect()
     }

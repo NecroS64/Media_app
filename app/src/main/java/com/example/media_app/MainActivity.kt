@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     var flag_menu :Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var serverIp = ip_local // IP адрес сервера
+        var serverIp = ip_server // IP адрес сервера
         var serverPort = 3749
         val Client = WebSocketClient()
         val postRepository = PostRepository(Client)
@@ -102,8 +102,8 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onDestroy() {
-        super.onDestroy()
         viewModel.disconnect()
+        super.onDestroy()
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu,menu)

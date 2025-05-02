@@ -59,7 +59,7 @@ class PostFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_post, container, false)
         recyclerView = view.findViewById(R.id.recycle)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
-        val adapt = MyAdapterPost(emptyList())
+        val adapt = MyAdapterPost(emptyList(),viewModel)
         recyclerView.adapter = adapt
 
         val newPostButton = view.findViewById<Button>(R.id.newPost)

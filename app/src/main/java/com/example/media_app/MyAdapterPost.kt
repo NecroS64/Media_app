@@ -6,16 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.graphics.drawable.toDrawable
-import androidx.navigation.findNavController
+import androidx.fragment.app.activityViewModels
 
-class MyAdapterPost(var data: List<Post>) : RecyclerView.Adapter<MyAdapterPost.MyViewHolder>() {
+class MyAdapterPost(var data: List<Post>, private val viewModel: MainViewModel) : RecyclerView.Adapter<MyAdapterPost.MyViewHolder>() {
+
     private var expandedPosition: Int? = null
 
     class MyViewHolder(val row: View) : RecyclerView.ViewHolder(row) {
@@ -30,6 +28,9 @@ class MyAdapterPost(var data: List<Post>) : RecyclerView.Adapter<MyAdapterPost.M
         val desi_st = row.findViewById<View>(R.id.desi_status)
         val body = row.findViewById<LinearLayout>(R.id.templ)
         val dopBut = row.findViewById<LinearLayout>(R.id.dopButton)
+        val delBut = row.findViewById<ImageButton>(R.id.deleteButton)
+        val editBut = row.findViewById<ImageButton>(R.id.editButton)
+        val acceptBut = row.findViewById<ImageButton>(R.id.checkButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyAdapterPost.MyViewHolder {
@@ -69,6 +70,15 @@ class MyAdapterPost(var data: List<Post>) : RecyclerView.Adapter<MyAdapterPost.M
                 }
                 notifyItemChanged(actualPosition)
                 previousExpanded?.let { notifyItemChanged(it) }
+            }
+            holder.delBut.setOnClickListener{
+                viewModel.deletePost(post.id)
+            }
+            holder.editBut.setOnClickListener{
+                Log.d("MyTag_adapt","click on edit button")
+            }
+            holder.acceptBut.setOnClickListener{
+                viewModel.acceptPost(post.id)
             }
         }
     }

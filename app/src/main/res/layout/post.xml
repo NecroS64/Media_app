@@ -157,26 +157,35 @@
             android:orientation="horizontal"
             tools:visibility="visible">
 
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageButton
+                android:id="@+id/deleteButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:background="@drawable/buticon"
+                android:contentDescription="Delete post button"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bin" />
 
-            <Button
-                android:id="@+id/button5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageButton
+                android:id="@+id/editButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:background="@drawable/buticon"
+                android:contentDescription="Delete post button"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_edit" />
 
-            <Button
-                android:id="@+id/button6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageButton
+                android:id="@+id/checkButton"
+                android:layout_width="48dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:background="@drawable/buticon"
+                android:contentDescription="Delete post button"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_check"/>
         </LinearLayout>
 
     </LinearLayout>
