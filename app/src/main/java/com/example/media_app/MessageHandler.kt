@@ -51,7 +51,7 @@ class MessageHandler(
 
         val peopleFlow = peopleRepository.responses.map {
             try {
-                IncomingMessage.PeopleMessage(parsePeople(JSONObject(it)))
+                IncomingMessage.PeopleMessage(parsePeople(JSONObject(it).getJSONObject("People values")))
             } catch (e: Exception) {
                 IncomingMessage.Unknown(it)
             }
@@ -60,7 +60,7 @@ class MessageHandler(
         return merge(postFlow, peopleFlow)
     }
     private fun parsePost(json: JSONObject): Post {
-        Log.d("MyTag_handler", "parsing message")
+        Log.d("MyTag_handler", "parsing post")
 
         val id = json.getInt("id")
         val date = json.optString("date")
@@ -70,9 +70,11 @@ class MessageHandler(
         val theme = json.optString("theme")
         val addInfo = json.optString("add_inf")
         val tags = json.getJSONArray("tegs").getString(0)
-        val textStatus = json.optInt("text_status")
+        val textStatusString = json.optString("text_status")
+        Log.d("MyTag_handler","textstatus $textStatusString")
+        val textStatus = STATUS.getCodeByValue(textStatusString)
         val pict = json.optString("pict")
-        val pictStatus = json.optInt("pict_status")
+        val pictStatus = STATUS.getCodeByValue(json.optString("pict_status"))
         val idSheet = json.optInt("id_sheet")
 
         return Post(
@@ -84,16 +86,27 @@ class MessageHandler(
             theme = theme,
             add_info = addInfo,
             tags = tags,
-            text_status = textStatus,
+            text_status = textStatus!!,
             pict = pict,
-            pict_status = pictStatus,
+            pict_status = pictStatus!!,
             id_sheet = idSheet
         )
 
     }
     private fun parsePeople(json: JSONObject): People {
-        return People(
+        Log.d("MyTag_handler", "parsing people")
 
+        val name = json.optString("Name")
+        val role = json.optString("Role")
+        val roleCode = ROLE.getCodeByValue(role)
+//        val right = json.getInt("Right")
+        return People(
+            name = name,
+            role = roleCode!!,
+            right = null,
+            texrColor = null,
+            backColor = null,
+            workStatus = 0
         )
     }
 

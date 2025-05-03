@@ -20,7 +20,6 @@ import org.json.JSONObject
 import java.sql.Time
 
 
-val layoutList = mutableListOf<View>()
 
 
 class PostFragment : Fragment() {

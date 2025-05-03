@@ -86,7 +86,8 @@ class LoginFragment : Fragment() {
                 if (activity != null && !requireActivity().isFinishing) {
                     (activity as MainActivity).add_menu()
                 }
-                viewModel.send_post()
+//                viewModel.send_post()
+//                viewModel.send_people()
                 view.findNavController()
                     .navigate(R.id.action_loginFragment_to_postFragment2)}
 

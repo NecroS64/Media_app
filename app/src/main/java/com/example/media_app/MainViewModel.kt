@@ -1,5 +1,6 @@
 package com.example.media_app
 
+import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,19 +9,38 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-enum class STATUS(val value:Int){
-    green(2),
-    yellow(1),
-    red(0)
+enum class STATUS(val code: Int, val value: String){
+    green(2,"green"),
+    yellow(1,"yellow"),
+    red(0,"red");
 
+    companion object {
+        fun getCodeByValue(value: String): Int? {
+            return entries.find { it.value == value }?.code
+        }
+    }
 }
+
+enum class ROLE(val code: Int, val value: String) {
+    VIDEO(2, "v"),
+    DESIGNER(1, "d"),
+    COPYWRITTER(0, "c");
+
+    companion object {
+        fun getCodeByValue(value: String): Int? {
+            return entries.find { it.value == value }?.code
+        }
+    }
+}
+
+
 
 
 class Post( var id:Int, var date:String?,
             var time: String, var copywritter: String?, var designer:String?,
             var theme:String?,var add_info:String?, tags:String,var text_status:Int,
-            var pict: String?,var pict_status:Int, var id_sheet:Int){}
-class People(){}
+            var pict: String?,var pict_status:Int, var id_sheet:Int?){}
+class People(var name: String, var role:Int,right:Int?, texrColor: Color?, backColor: Color?, workStatus: Int?){}
 class MainViewModel(
 
 ) : ViewModel() {
@@ -60,6 +80,8 @@ class MainViewModel(
                     }
                     is IncomingMessage.PeopleMessage -> {
                         // обработка people
+                        val updatedList = _people.value.orEmpty().toMutableList().apply { add(message.people) }
+                        _people.value = updatedList
                     }
                     is IncomingMessage.Unknown -> {
                         Log.w("MyTag_mainViewModel", "Unknown message: ${message.raw}")
@@ -70,10 +92,12 @@ class MainViewModel(
                         if (message.json["Command"]== "authorization")
                         {
                             Log.w("MyTag_mainViewModel", "its authorization")
-                            if(message.json["Answer"]== "successful")
+                            if(message.json["Status"]== "successful")
                             {
                                 Log.w("MyTag_mainViewModel", "its succesfull")
                                 _navigateToDetails.value = Unit
+                                send_post()
+                                send_people()
                             }
                             else
                             {
@@ -197,9 +221,9 @@ class MainViewModel(
     fun acceptPost(id: Int){
         viewModelScope.launch {
             try {
-                Log.d("MyTag_mainViewModel","comlpete post $id")
+                Log.d("MyTag_mainViewModel","complete post $id")
                 val json = JSONObject()
-                json.put("Command", "comlpete post")
+                json.put("Command", "complete post")
                 json.put("id",id)
                 messageHandler.send(json.toString())
 
@@ -213,8 +237,18 @@ class MainViewModel(
         messageHandler.disconnect()
     }
 
-
-
+    fun send_people() {
+        viewModelScope.launch {
+            try {
+                val json = JSONObject()
+                json.put("Command", "send people")
+                messageHandler.send(json.toString())
+            } catch (e: Exception) {
+                Log.d("MyTag_mainViewModel", "error send")
+                Log.d("MyTag_mainViewModel", "Ошибка отправки: ${e.message}")
+            }
+        }
+    }
 
 
 }
