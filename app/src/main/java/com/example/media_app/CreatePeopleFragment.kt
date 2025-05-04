@@ -54,15 +54,15 @@ class CreatePeopleFragment : Fragment() {
     private var param2: String? = null
     val roleMap = linkedMapOf(
         "Выбери роль" to "",
-        "Чмо" to "v",
-        "Лох обоссанный" to "d",
-        "Питонис-онанист" to "c"
+        "Видеограф" to "v",
+        "Дизайнер" to "d",
+        "Копирайтер" to "k"
     )
     val rightMap = linkedMapOf(
         "Выбери права" to "",
-        "водительские" to 0,
-        "мужские" to 1,
-        "настоящие" to 2
+        "Пользователь" to 0,
+        "Админ" to 1,
+        "Владелец" to 2
     )
 
 
@@ -78,6 +78,9 @@ class CreatePeopleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        if (activity != null && !requireActivity().isFinishing) {
+            (activity as MainActivity).hide_menu()
+        }
         val view = inflater.inflate(R.layout.fragment_create_people, container, false)
         role = view.findViewById(R.id.spinnerRole)
         right = view.findViewById(R.id.spinnerRight)

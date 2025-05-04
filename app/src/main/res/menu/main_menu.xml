@@ -12,4 +12,9 @@
         android:icon="@drawable/ic_people"
         android:title="Рабы"
         tools:ignore="DuplicateIds" />
+    <item
+        android:id="@+id/reportFragment"
+        android:icon="@drawable/ic_report"
+        android:title="Отчеты"
+        tools:ignore="DuplicateIds" />
 </menu>

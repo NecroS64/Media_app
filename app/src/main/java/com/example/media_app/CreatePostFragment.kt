@@ -52,7 +52,7 @@ class CreatePostFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_create_post, container, false)
         if (activity != null && !requireActivity().isFinishing) {
-            //(activity as MainActivity).hide_menu()
+            (activity as MainActivity).hide_menu()
         }
         btnPickDate = view.findViewById<Button>(R.id.btnPickDateL)
         btnPickDate = view.findViewById(R.id.btnPickDateL)

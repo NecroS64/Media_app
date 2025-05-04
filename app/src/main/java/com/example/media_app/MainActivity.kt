@@ -43,8 +43,10 @@ class MainActivity : AppCompatActivity() {
         var serverIp = ip_server // IP адрес сервера
         var serverPort = 3749
         val Client = WebSocketClient()
-        val postRepository = PostRepository(Client)
-        val peopleRepository = PeopleRepository(Client)
+        val application = requireNotNull(this).application
+        val database = AppDatabase.getInstance(application).postDao()
+        val postRepository = PostRepository(Client,database)
+        val peopleRepository = PeopleRepository(Client,database)
         val handler = MessageHandler(postRepository,peopleRepository)
         viewModel.setHandler(handler)
         viewModel.connectToServer(serverIp, serverPort)

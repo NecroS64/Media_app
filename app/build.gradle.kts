@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
 
     id("androidx.navigation.safeargs.kotlin")
+    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -11,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.media_app"
-        minSdk = 30
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -50,11 +52,14 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.okhttp)
     implementation(libs.colorpicker)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 //    implementation(libs.androidx.navigation)
 //    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.fragment)
-    implementation(libs.androidx.legacy.support.v4)
+    //implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)

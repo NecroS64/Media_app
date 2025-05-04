@@ -12,7 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class MyAdapterPeople(var data: List<People>, private val viewModel: MainViewModel) : RecyclerView.Adapter<MyAdapterPeople.MyViewHolder>() {
+class MyAdapterPeople(var data: List<PeopleTable>, private val viewModel: MainViewModel) : RecyclerView.Adapter<MyAdapterPeople.MyViewHolder>() {
 
 
     private var expandedPosition: Int? = null
@@ -51,7 +51,7 @@ class MyAdapterPeople(var data: List<People>, private val viewModel: MainViewMod
             }
 
             // Изменение статуса
-            setStatus(holder.statusView, 0)
+            setStatus(holder.statusView, people.workStatus!!)
 
             // Обработчик клика для раскрытия/сворачивания
             holder.itemView.setOnClickListener {
@@ -117,7 +117,7 @@ class MyAdapterPeople(var data: List<People>, private val viewModel: MainViewMod
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newData: List<People>) {
+    fun updateData(newData: List<PeopleTable>) {
         data = newData
         notifyDataSetChanged() // Для оптимизации используйте DiffUtil
     }

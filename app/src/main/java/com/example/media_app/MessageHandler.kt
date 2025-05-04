@@ -9,10 +9,13 @@ import org.json.JSONObject
 
 
 sealed class IncomingMessage {
-    data class PostMessage(val post: Post): IncomingMessage()
+    data class PostsMessage(val posts: List<PostTable>): IncomingMessage()
+    data class PostMessage(val post: String): IncomingMessage()
     data class PeopleMessage(val people: People): IncomingMessage()
+    data class PeoplesMessage(val peoples: List<PeopleTable>): IncomingMessage()
     data class Unknown(val raw: String): IncomingMessage()
     data class Other(val json: JSONObject): IncomingMessage()
+    data class err(val json: JSONObject): IncomingMessage()
 }
 
 
@@ -28,9 +31,12 @@ class MessageHandler(
         postRepository.sendMessage(message)
         Log.d("MyTag_handler","send message")
     }
+    suspend fun GetPeopleCostCount(switchState:Int,spinnerValue:Int):List<PeoplePostCount>{
+        return peopleRepository.GetPeopleCostCount(switchState,spinnerValue)
+    }
 
     fun observeMessages(): Flow<IncomingMessage> {
-        val postFlow = postRepository.responses.map {
+        val postFlow = postRepository.responsesWEB.map {
             try {
                 if (it.contains("authorization")) {
                     Log.d("MyTag_handler", "get authorization")
@@ -38,7 +44,10 @@ class MessageHandler(
                 }
                 else {
                     Log.d("MyTag_handler", "get post")
-                    IncomingMessage.PostMessage(parsePost(JSONObject(it).getJSONObject("Post values")))
+                    postRepository.addPost(parsePost(JSONObject(it).getJSONObject("Post values")))
+                     IncomingMessage.Unknown("new post to db")
+                    //IncomingMessage.PostMessage(parsePost(JSONObject(it).getJSONObject("Post values")).toString())
+                    //IncomingMessage.PostsMessage(it)
                 }
             } catch (e: Exception) {
                 e.message?.let { it1 -> Log.d("MyTag_handler", it1) }
@@ -49,17 +58,34 @@ class MessageHandler(
             }
         }
 
-        val peopleFlow = peopleRepository.responses.map {
+        val peopleFlow = peopleRepository.responsesWEB.map {
             try {
-                IncomingMessage.PeopleMessage(parsePeople(JSONObject(it).getJSONObject("People values")))
+                peopleRepository.addPeople(parsePeople(JSONObject(it).getJSONObject("People values")))
+                IncomingMessage.Unknown("new people to db")
+                //IncomingMessage.PeopleMessage(parsePeople(JSONObject(it).getJSONObject("People values")))
+
             } catch (e: Exception) {
                 IncomingMessage.Unknown(it)
             }
         }
+        val peopleDatabaseFlow = peopleRepository.responsesBDPeople.map {
+            try {
+                IncomingMessage.PeoplesMessage(it)
+            } catch (e: Exception) {
+                IncomingMessage.Unknown("error ${e.message}")
+            }
+        }
+        val postDatabaseFlow = postRepository.responsesBDPost.map {
+            try {
+                IncomingMessage.PostsMessage(it)
+            } catch (e: Exception) {
+                IncomingMessage.Unknown("error ${e.message}")
+            }
+        }
 
-        return merge(postFlow, peopleFlow)
+        return merge(postFlow, peopleFlow,postDatabaseFlow,peopleDatabaseFlow)
     }
-    private fun parsePost(json: JSONObject): Post {
+    private fun parsePost(json: JSONObject): PostTable {
         Log.d("MyTag_handler", "parsing post")
 
         val id = json.getInt("id")
@@ -75,9 +101,8 @@ class MessageHandler(
         val textStatus = STATUS.getCodeByValue(textStatusString)
         val pict = json.optString("pict")
         val pictStatus = STATUS.getCodeByValue(json.optString("pict_status"))
-        val idSheet = json.optInt("id_sheet")
 
-        return Post(
+        return PostTable(
             id = id,
             date = date,
             time = time,
@@ -88,19 +113,18 @@ class MessageHandler(
             tags = tags,
             text_status = textStatus!!,
             pict = pict,
-            pict_status = pictStatus!!,
-            id_sheet = idSheet
+            pict_status = pictStatus!!
         )
 
     }
-    private fun parsePeople(json: JSONObject): People {
+    private fun parsePeople(json: JSONObject): PeopleTable {
         Log.d("MyTag_handler", "parsing people")
 
         val name = json.optString("Name")
         val role = json.optString("Role")
         val roleCode = ROLE.getCodeByValue(role)
 //        val right = json.getInt("Right")
-        return People(
+        return PeopleTable(
             name = name,
             role = roleCode!!,
             right = null,

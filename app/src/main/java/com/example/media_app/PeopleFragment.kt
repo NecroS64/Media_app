@@ -43,7 +43,7 @@ class PeopleFragment : Fragment() {
         // Inflate the layout for this fragment
         Log.d("MyTag_peopleFragment", "create")
         if (activity != null && !requireActivity().isFinishing) {
-            //(activity as MainActivity).add_menu()
+            (activity as MainActivity).add_menu()
         }
 
 

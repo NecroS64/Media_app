@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.fragment.app.activityViewModels
 
-class MyAdapterPost(var data: List<Post>, private val viewModel: MainViewModel) : RecyclerView.Adapter<MyAdapterPost.MyViewHolder>() {
+class MyAdapterPost(var data: List<PostTable>, private val viewModel: MainViewModel) : RecyclerView.Adapter<MyAdapterPost.MyViewHolder>() {
 
     private var expandedPosition: Int? = null
 
@@ -128,7 +128,7 @@ class MyAdapterPost(var data: List<Post>, private val viewModel: MainViewModel) 
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newData: List<Post>) {
+    fun updateData(newData: List<PostTable>) {
         data = newData
         notifyDataSetChanged() // Для оптимизации используйте DiffUtil
     }

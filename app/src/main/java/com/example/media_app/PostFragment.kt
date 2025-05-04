@@ -51,7 +51,7 @@ class PostFragment : Fragment() {
     ): View {
         Log.d("MyTag_postFragment", "create")
         if (activity != null && !requireActivity().isFinishing) {
-            //(activity as MainActivity).add_menu()
+            (activity as MainActivity).add_menu()
         }
 
 

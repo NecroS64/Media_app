@@ -1,20 +1,23 @@
 package com.example.media_app
 
 import IConnectable
-import TcpClient
 import android.util.Log
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.filter
 
 class PostRepository(
-    private val tcpClient: IConnectable
+    private val tcpClient: IConnectable,
+    private val bd : PostDAO
 ) {
 
-    val responses: Flow<String> = tcpClient.responses.filter { it.contains("send post") or it.contains("authorization") }
-
+    val responsesWEB: Flow<String> = tcpClient.responses.filter { it.contains("send post") or it.contains("authorization") }
+    val responsesBDPost: Flow<List<PostTable>> = bd.getAllPost()
     suspend fun connect(serverIp: String, serverPort: Int): Boolean {
         return tcpClient.connect(serverIp, serverPort)
+    }
+    suspend fun addPost(post:PostTable)
+    {
+        bd.insertPostAndUpdatePeople(post)
     }
 
     suspend fun sendMessage(message: String) {
@@ -36,18 +39,27 @@ class PostRepository(
 }
 
 class PeopleRepository(
-    private val tcpClient: IConnectable
+    private val tcpClient: IConnectable,
+    private val bd : PostDAO
 ) {
 
-    val responses: Flow<String> = tcpClient.responses.filter { it.contains("send people") }
+    val responsesWEB: Flow<String> = tcpClient.responses.filter { it.contains("send people") }
+    val responsesBDPeople: Flow<List<PeopleTable>> = bd.getAllPeople()
 
-
-
+    suspend fun addPeople(people:PeopleTable)
+    {
+        bd.Insert(people)
+    }
     suspend fun sendMessage(message: String) {
         if (!tcpClient.isConnected()) {
             throw IllegalStateException("Not connected to server")
         }
         tcpClient.sendMessage(message)
+    }
+
+    suspend fun GetPeopleCostCount(switchState:Int,spinnerValue:Int):List<PeoplePostCount>{
+        Log.d("MyTag_peopleRep","getpeopleposcount")
+        return bd.getPeoplePostCounts(switchState,spinnerValue)
     }
 
     fun isConnected(): Boolean {

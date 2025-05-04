@@ -24,7 +24,7 @@ enum class STATUS(val code: Int, val value: String){
 enum class ROLE(val code: Int, val value: String) {
     VIDEO(2, "v"),
     DESIGNER(1, "d"),
-    COPYWRITTER(0, "c");
+    COPYWRITTER(0, "k");
 
     companion object {
         fun getCodeByValue(value: String): Int? {
@@ -38,8 +38,8 @@ enum class ROLE(val code: Int, val value: String) {
 
 class Post( var id:Int, var date:String?,
             var time: String, var copywritter: String?, var designer:String?,
-            var theme:String?,var add_info:String?, tags:String,var text_status:Int,
-            var pict: String?,var pict_status:Int, var id_sheet:Int?){}
+            var theme:String?,var add_info:String?,var tags:String,var text_status:Int,
+            var pict: String?,var pict_status:Int){}
 class People(var name: String, var role:Int,right:Int?, texrColor: Color?, backColor: Color?, workStatus: Int?){}
 class MainViewModel(
 
@@ -53,13 +53,13 @@ class MainViewModel(
     private val _navigateToDetails = MutableLiveData<Unit>()
     val navigateToDetails: LiveData<Unit> get() = _navigateToDetails
 
-    private val _posts = MutableLiveData<List<Post>>()
-    val posts: LiveData<List<Post>> get() = _posts
+    private val _posts = MutableLiveData<List<PostTable>>()
+    val posts: LiveData<List<PostTable>> get() = _posts
 
-    private val _people = MutableLiveData<List<People>>()
-    val people: LiveData<List<People>> get() = _people
+    private val _people = MutableLiveData<List<PeopleTable>>()
+    val people: LiveData<List<PeopleTable>> get() = _people
 
-    fun addPost(post: Post) {
+    fun addPost(post: PostTable) {
         val updatedList = _posts.value.orEmpty().toMutableList().apply { add(post) }
         _posts.value = updatedList
     }
@@ -74,14 +74,14 @@ class MainViewModel(
         viewModelScope.launch {
             messageHandler.observeMessages().collect { message ->
                 when (message) {
-                    is IncomingMessage.PostMessage -> {
-                        val updatedList = _posts.value.orEmpty().toMutableList().apply { add(message.post) }
-                        _posts.value = updatedList
+                    is IncomingMessage.PostsMessage -> {
+//                        val updatedList = _posts.value.orEmpty().toMutableList().apply { add(message.post) }
+//                        _posts.value = updatedList
+                        _posts.value = message.posts
                     }
-                    is IncomingMessage.PeopleMessage -> {
+                    is IncomingMessage.PeoplesMessage -> {
                         // обработка people
-                        val updatedList = _people.value.orEmpty().toMutableList().apply { add(message.people) }
-                        _people.value = updatedList
+                        _people.value=message.peoples
                     }
                     is IncomingMessage.Unknown -> {
                         Log.w("MyTag_mainViewModel", "Unknown message: ${message.raw}")
@@ -105,6 +105,17 @@ class MainViewModel(
                             }
                         }
                     }
+
+                    is IncomingMessage.PostMessage -> {
+
+                    }
+                    is IncomingMessage.err -> {
+
+                    }
+
+                    is IncomingMessage.PeopleMessage -> {
+
+                    }
                 }
             }
         }
@@ -117,6 +128,9 @@ class MainViewModel(
         }
     }
 
+    suspend fun getPeopleCostCount(switchState:Int,spinnerValue:Int): List<PeoplePostCount> {
+        return messageHandler.GetPeopleCostCount(switchState,spinnerValue)
+    }
 
     fun send_post() {
         viewModelScope.launch {

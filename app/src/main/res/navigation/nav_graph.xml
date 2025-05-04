@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_postFragment_to_createPostFragment"
             app:destination="@id/createPostFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_reportFragment2"
+            app:destination="@id/reportFragment" />
     </fragment>
     <fragment
         android:id="@+id/peopleFragment"
@@ -39,6 +42,9 @@
         <action
             android:id="@+id/action_peopleFragment_to_createPeopleFragment"
             app:destination="@id/createPeopleFragment" />
+        <action
+            android:id="@+id/action_peopleFragment_to_reportFragment2"
+            app:destination="@id/reportFragment" />
     </fragment>
     <fragment
         android:id="@+id/createPeopleFragment"
@@ -57,5 +63,37 @@
         <action
             android:id="@+id/action_createPostFragment_to_postFragment"
             app:destination="@id/postFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.example.media_app.ReportFragment"
+        android:label="fragment_report"
+        tools:layout="@layout/fragment_report" >
+        <action
+            android:id="@+id/action_reportFragment2_to_peopleFragment"
+            app:destination="@id/peopleFragment" />
+        <action
+            android:id="@+id/action_reportFragment2_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_reportFragment_to_filterReportFragment"
+            app:destination="@id/filterReportFragment" />
+        <argument
+            android:name="switchState"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="spinnerValue"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/filterReportFragment"
+        android:name="com.example.media_app.FilterReportFragment"
+        android:label="fragment_filter_report"
+        tools:layout="@layout/fragment_filter_report" >
+        <action
+            android:id="@+id/action_filterReportFragment_to_reportFragment"
+            app:destination="@id/reportFragment" />
     </fragment>
 </navigation>
