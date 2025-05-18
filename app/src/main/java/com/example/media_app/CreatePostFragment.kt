@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
+import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import org.json.JSONArray
@@ -130,7 +131,7 @@ class CreatePostFragment : Fragment() {
         val descr = view.findViewById<TextView>(R.id.description_name)
         val tags = view.findViewById<TextView>(R.id.tags_name)
         val picture = view.findViewById<TextView>(R.id.Picture_name)
-        val not = view.findViewById<RadioButton>(R.id.radioNotify)
+        val not = view.findViewById<Switch>(R.id.switchNotify)
 
 
         val json = JSONObject()
@@ -143,10 +144,8 @@ class CreatePostFragment : Fragment() {
         val Theme = theme.text.toString()
         val description = descr.text.toString()
         val Picture = picture.text.toString()
-        val notif = not.isChecked.toString()
         var ntf = 0
-        if (notif=="false") ntf = 0
-        if (notif=="true") ntf = 1
+        if (not.isChecked) ntf = 1
         val copywriter = JSONArray().apply { put(copy.text.toString()) }
         val designer = JSONArray().apply { put(desi.text.toString()) }
         val tag = JSONArray().apply { put(tags.text.toString()) }

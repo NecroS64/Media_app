@@ -39,6 +39,12 @@ interface PostDAO {
     @Query("SELECT * FROM post")
     fun getAllPost() : Flow<List<PostTable>>
 
+    @Query("DELETE FROM post")
+    suspend fun deleteAllPost()
+
+    @Query("DELETE FROM post WHERE id =:idPost")
+    suspend fun deletePost(idPost:Int)
+
     @Query("SELECT * FROM people")
     fun getAllPeople() : Flow<List<PeopleTable>>
 

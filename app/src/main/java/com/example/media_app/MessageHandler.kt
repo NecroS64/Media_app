@@ -26,7 +26,9 @@ class MessageHandler(
     suspend fun connect(serverIp: String, serverPort: Int): Boolean {
         return postRepository.connect(serverIp, serverPort)
     }
-
+    suspend fun dellAllPost(){
+        postRepository.dellAllPost()
+    }
     suspend fun send(message: String) {
         postRepository.sendMessage(message)
         Log.d("MyTag_handler","send message")
@@ -38,16 +40,35 @@ class MessageHandler(
     fun observeMessages(): Flow<IncomingMessage> {
         val postFlow = postRepository.responsesWEB.map {
             try {
+                val command = JSONObject(it).optString("Command")
                 if (it.contains("authorization")) {
                     Log.d("MyTag_handler", "get authorization")
                     IncomingMessage.Other(JSONObject(it))
                 }
-                else {
+                else if(command == "send post") {
                     Log.d("MyTag_handler", "get post")
                     postRepository.addPost(parsePost(JSONObject(it).getJSONObject("Post values")))
                      IncomingMessage.Unknown("new post to db")
                     //IncomingMessage.PostMessage(parsePost(JSONObject(it).getJSONObject("Post values")).toString())
                     //IncomingMessage.PostsMessage(it)
+                }
+                else if(command == "synchronization") {
+                    Log.d("MyTag_handler", "synchronization")
+                    postRepository.addPost(parsePost(JSONObject(it).getJSONObject("Post values")))
+                    IncomingMessage.Unknown("synchronization")
+                    //IncomingMessage.PostMessage(parsePost(JSONObject(it).getJSONObject("Post values")).toString())
+                    //IncomingMessage.PostsMessage(it)
+                }
+                else if(command == "delete post") {
+                    Log.d("MyTag_handler", "delete post answer")
+                    val id = JSONObject(it).optInt("id");
+                    postRepository.deletePost(id)
+                    IncomingMessage.Unknown("delete post")
+                    //IncomingMessage.PostMessage(parsePost(JSONObject(it).getJSONObject("Post values")).toString())
+                    //IncomingMessage.PostsMessage(it)
+                }
+                else {
+                    IncomingMessage.Unknown("unknow message $it")
                 }
             } catch (e: Exception) {
                 e.message?.let { it1 -> Log.d("MyTag_handler", it1) }

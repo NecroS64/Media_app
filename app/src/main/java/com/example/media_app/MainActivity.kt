@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.connectToServer(serverIp, serverPort)
         //viewModel.sendMessage("сервер!")
         viewModel.posts.observe(this) { message ->
-            Log.d("MyTag", "Получено: $message")
+            //Log.d("MyTag", "Получено: $message")
             // Обнови UI здесь
         }
 

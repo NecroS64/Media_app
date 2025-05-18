@@ -10,7 +10,7 @@ class PostRepository(
     private val bd : PostDAO
 ) {
 
-    val responsesWEB: Flow<String> = tcpClient.responses.filter { it.contains("send post") or it.contains("authorization") }
+    val responsesWEB: Flow<String> = tcpClient.responses//.filter { it.contains("send post") or it.contains("authorization") }
     val responsesBDPost: Flow<List<PostTable>> = bd.getAllPost()
     suspend fun connect(serverIp: String, serverPort: Int): Boolean {
         return tcpClient.connect(serverIp, serverPort)
@@ -19,7 +19,12 @@ class PostRepository(
     {
         bd.insertPostAndUpdatePeople(post)
     }
-
+    suspend fun dellAllPost(){
+        bd.deleteAllPost()
+    }
+    suspend fun deletePost(id:Int){
+        bd.deletePost(id)
+    }
     suspend fun sendMessage(message: String) {
         if (!tcpClient.isConnected()) {
             throw IllegalStateException("Not connected to server")

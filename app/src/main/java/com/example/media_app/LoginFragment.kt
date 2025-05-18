@@ -14,13 +14,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-
 
 
 /**
@@ -30,6 +30,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class LoginFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -43,73 +44,59 @@ class LoginFragment : Fragment() {
 //        val view = inflater.inflate(R.layout.fragment_login, container, false)
 
 
+    }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return inflater.inflate(R.layout.fragment_login, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        Log.d("MyTag_v", "create")
+
+        val swo = view.findViewById<Switch>(R.id.switch1)
+        swo.setOnClickListener {
+            Log.d("myTag_switch", "click")
+            swo.text = if (swo.isChecked) "server" else "local"
         }
 
-        override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View {
-            val view = inflater.inflate(R.layout.fragment_login, container, false)
-            Log.d("MyTag_v", "create")
-            // Inflate the layout for this fragment
-
-
-            var serverIp = ip_local // IP адрес сервера
-            val swo = view.findViewById<Switch>(R.id.switch1)
-            swo.setOnClickListener {
-                Log.d("myTag_switch", "click");
-                if (swo.isChecked) {
-                    //change_TCP_server(ip_server)
-                    swo.text = "server"
-                } else {
-                    //change_TCP_server(ip_local)
-                    swo.text = "local"
-                }
-            }
-
-            val but = view.findViewById<Button>(R.id.button2)
-            but.setOnClickListener {
-                val name = view.findViewById<EditText>(R.id.editTextText)
-
-                if (name.text.isEmpty()) {
-                    val tx = view.findViewById<TextView>(R.id.textView)
-                    tx.text = "Имя напиши, дурачок)))"
-                    return@setOnClickListener
-                }
-
-                Log.d("myTag_textEdit", name.text.toString());
-                viewModel.autho(name.text.toString())
-                //viewModel.sendMessage("Привет, сервер!")
-            }
-            viewModel.navigateToDetails.observe(viewLifecycleOwner) {
-                if (activity != null && !requireActivity().isFinishing) {
-                    (activity as MainActivity).add_menu()
-                }
-//                viewModel.send_post()
-//                viewModel.send_people()
-                view.findNavController()
-                    .navigate(R.id.action_loginFragment_to_postFragment2)}
-
-//            view.findViewById<Button>(R.id.butlog).setOnClickListener {
-//                if (activity != null && !requireActivity().isFinishing) {
-//                    (activity as MainActivity).add_menu()
-//                }
-//
-//
-//
-//                view.findNavController()
-//                    .navigate(R.id.action_loginFragment_to_postFragment2)
-//            }
-            return view
-
-
-
-
-
-
-
+        view.findViewById<Button>(R.id.rsbtn).setOnClickListener {
+            viewModel.deleteAllPost()
         }
+
+        view.findViewById<Button>(R.id.button2).setOnClickListener {
+            val name = view.findViewById<EditText>(R.id.editTextText)
+            if (name.text.isEmpty()) {
+                view.findViewById<TextView>(R.id.textView).text = "Имя напиши, дурачок)))"
+                return@setOnClickListener
+            }
+
+            Log.d("myTag_textEdit", name.text.toString())
+            viewModel.autho(name.text.toString())
+        }
+
+        viewModel.navigateToDetails.observe(viewLifecycleOwner) {
+            if (activity != null && !requireActivity().isFinishing) {
+                (activity as MainActivity).add_menu()
+            }
+            viewModel.saveUser(true)
+            findNavController().navigate(R.id.action_loginFragment_to_postFragment2)
+        }
+
+        if (viewModel.loadUser()) {
+            Log.d("MyTag_Cache", "loading cache")
+            viewModel.send_post()
+            if (activity != null && !requireActivity().isFinishing) {
+                (activity as MainActivity).add_menu()
+            }
+            findNavController().navigate(R.id.action_loginFragment_to_postFragment2)
+        }
+    }
+
 
     override fun onDestroy() {
         //tcpClient.disconnect() // Закрытие соединения

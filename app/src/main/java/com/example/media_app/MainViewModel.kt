@@ -1,7 +1,10 @@
 package com.example.media_app
 
+import android.app.Application
+import android.content.Context
 import android.graphics.Color
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,10 +12,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-enum class STATUS(val code: Int, val value: String){
-    green(2,"green"),
-    yellow(1,"yellow"),
-    red(0,"red");
+enum class STATUS(val code: Int, val value: String) {
+    green(2, "green"),
+    yellow(1, "yellow"),
+    red(0, "red");
 
     companion object {
         fun getCodeByValue(value: String): Int? {
@@ -34,17 +37,24 @@ enum class ROLE(val code: Int, val value: String) {
 }
 
 
+class Post(
+    var id: Int, var date: String?,
+    var time: String, var copywritter: String?, var designer: String?,
+    var theme: String?, var add_info: String?, var tags: String, var text_status: Int,
+    var pict: String?, var pict_status: Int
+) {}
 
+class People(
+    var name: String,
+    var role: Int,
+    right: Int?,
+    texrColor: Color?,
+    backColor: Color?,
+    workStatus: Int?
+) {}
 
-class Post( var id:Int, var date:String?,
-            var time: String, var copywritter: String?, var designer:String?,
-            var theme:String?,var add_info:String?,var tags:String,var text_status:Int,
-            var pict: String?,var pict_status:Int){}
-class People(var name: String, var role:Int,right:Int?, texrColor: Color?, backColor: Color?, workStatus: Int?){}
-class MainViewModel(
-
-) : ViewModel() {
-    private lateinit var  messageHandler: MessageHandler
+class MainViewModel (application: Application) : AndroidViewModel(application) {
+    private lateinit var messageHandler: MessageHandler
 
 
     private val _connectionState = MutableLiveData<Boolean>()
@@ -64,43 +74,51 @@ class MainViewModel(
         _posts.value = updatedList
     }
 
+    fun saveUser(isLoggedIn: Boolean) {
+        val prefs = getApplication<Application>()
+            .getSharedPreferences("app_cache", Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("user_logged_in", isLoggedIn).apply()
+    }
 
-    fun setHandler(messageHandler: MessageHandler)
-    {
-        this.messageHandler=messageHandler
+    fun loadUser(): Boolean {
+        val prefs = getApplication<Application>()
+            .getSharedPreferences("app_cache", Context.MODE_PRIVATE)
+        return prefs.getBoolean("user_logged_in", false) // false — значение по умолчанию
+    }
+
+    fun setHandler(messageHandler: MessageHandler) {
+        this.messageHandler = messageHandler
         observeResponses()
     }
+
     private fun observeResponses() {
         viewModelScope.launch {
             messageHandler.observeMessages().collect { message ->
                 when (message) {
                     is IncomingMessage.PostsMessage -> {
-//                        val updatedList = _posts.value.orEmpty().toMutableList().apply { add(message.post) }
-//                        _posts.value = updatedList
+
                         _posts.value = message.posts
                     }
+
                     is IncomingMessage.PeoplesMessage -> {
                         // обработка people
-                        _people.value=message.peoples
+                        _people.value = message.peoples
                     }
+
                     is IncomingMessage.Unknown -> {
                         Log.w("MyTag_mainViewModel", "Unknown message: ${message.raw}")
                     }
 
                     is IncomingMessage.Other -> {
                         Log.w("MyTag_mainViewModel", "its other")
-                        if (message.json["Command"]== "authorization")
-                        {
+                        if (message.json["Command"] == "authorization") {
                             Log.w("MyTag_mainViewModel", "its authorization")
-                            if(message.json["Status"]== "successful")
-                            {
+                            if (message.json["Status"] == "successful") {
                                 Log.w("MyTag_mainViewModel", "its succesfull")
                                 _navigateToDetails.value = Unit
                                 send_post()
                                 send_people()
-                            }
-                            else
-                            {
+                            } else {
 
                             }
                         }
@@ -109,6 +127,7 @@ class MainViewModel(
                     is IncomingMessage.PostMessage -> {
 
                     }
+
                     is IncomingMessage.err -> {
 
                     }
@@ -128,8 +147,8 @@ class MainViewModel(
         }
     }
 
-    suspend fun getPeopleCostCount(switchState:Int,spinnerValue:Int): List<PeoplePostCount> {
-        return messageHandler.GetPeopleCostCount(switchState,spinnerValue)
+    suspend fun getPeopleCostCount(switchState: Int, spinnerValue: Int): List<PeoplePostCount> {
+        return messageHandler.GetPeopleCostCount(switchState, spinnerValue)
     }
 
     fun send_post() {
@@ -146,8 +165,7 @@ class MainViewModel(
         }
     }
 
-    fun autho(name: String)
-    {
+    fun autho(name: String) {
         viewModelScope.launch {
             try {
                 val json = JSONObject()
@@ -162,13 +180,12 @@ class MainViewModel(
         }
     }
 
-    fun change_server(ip: String )
-    {
+    fun change_server(ip: String) {
         viewModelScope.launch {
             try {
-        messageHandler.disconnect()
-        val serverPort = 3749         // Порт сервера
-        messageHandler.connect(ip,serverPort)
+                messageHandler.disconnect()
+                val serverPort = 3749         // Порт сервера
+                messageHandler.connect(ip, serverPort)
             } catch (e: Exception) {
                 Log.d("MyTag_mainViewModel", "error send")
                 Log.d("MyTag_mainViewModel", "Ошибка отправки: ${e.message}")
@@ -180,18 +197,18 @@ class MainViewModel(
         viewModelScope.launch {
             try {
                 messageHandler.send(msg)
-                Log.d("MyTag_mainViewModel","send")
+                Log.d("MyTag_mainViewModel", "send")
             } catch (e: Exception) {
-                Log.d("MyTag_mainViewModel","error send")
-                Log.d("MyTag_mainViewModel","Ошибка отправки: ${e.message}")
+                Log.d("MyTag_mainViewModel", "error send")
+                Log.d("MyTag_mainViewModel", "Ошибка отправки: ${e.message}")
             }
         }
     }
-    fun updatePostList()
-    {
+
+    fun updatePostList() {
         viewModelScope.launch {
             try {
-                Log.d("MyTag_mainViewModel","its a swipe")
+                Log.d("MyTag_mainViewModel", "its a swipe")
                 val json = JSONObject()
                 json.put("Command", "update database")
                 messageHandler.send(json.toString())
@@ -202,13 +219,14 @@ class MainViewModel(
             }
         }
     }
-    fun deletePost(id: Int){
+
+    fun deletePost(id: Int) {
         viewModelScope.launch {
             try {
-                Log.d("MyTag_mainViewModel","Delete post $id")
+                Log.d("MyTag_mainViewModel", "Delete post $id")
                 val json = JSONObject()
                 json.put("Command", "delete post")
-                json.put("id",id)
+                json.put("id", id)
                 messageHandler.send(json.toString())
 
             } catch (e: Exception) {
@@ -217,10 +235,22 @@ class MainViewModel(
             }
         }
     }
-    fun updatePost(post: Post){
+
+    fun deleteAllPost() {
         viewModelScope.launch {
             try {
-                Log.d("MyTag_mainViewModel","Update post ${post.id}")
+                messageHandler.dellAllPost()
+            } catch (e: Exception) {
+                Log.d("MyTag_mainViewModel", "error send")
+                Log.d("MyTag_mainViewModel", "Ошибка отправки: ${e.message}")
+            }
+        }
+    }
+
+    fun updatePost(post: Post) {
+        viewModelScope.launch {
+            try {
+                Log.d("MyTag_mainViewModel", "Update post ${post.id}")
                 val json = JSONObject()
                 json.put("Command", "update post")
                 //TODO
@@ -232,13 +262,14 @@ class MainViewModel(
             }
         }
     }
-    fun acceptPost(id: Int){
+
+    fun acceptPost(id: Int) {
         viewModelScope.launch {
             try {
-                Log.d("MyTag_mainViewModel","complete post $id")
+                Log.d("MyTag_mainViewModel", "complete post $id")
                 val json = JSONObject()
                 json.put("Command", "complete post")
-                json.put("id",id)
+                json.put("id", id)
                 messageHandler.send(json.toString())
 
             } catch (e: Exception) {
@@ -247,6 +278,7 @@ class MainViewModel(
             }
         }
     }
+
     fun disconnect() {
         messageHandler.disconnect()
     }

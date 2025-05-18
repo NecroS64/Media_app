@@ -18,8 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONObject
 import java.sql.Time
-
-
+import kotlin.math.abs
 
 
 class PostFragment : Fragment() {
@@ -86,7 +85,7 @@ class PostFragment : Fragment() {
                 velocityY: Float
             ): Boolean {
                 val deltaY = (p1?.y ?: 0f) - (e1?.y ?: 0f)
-                if (deltaY > 200 && Math.abs(velocityY) > 300 && isAtTop) {
+                if (deltaY > 500 && abs(velocityY) > 400 && isAtTop) {
                     viewModel.updatePostList()
                     return true
                 }
