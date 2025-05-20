@@ -1,8 +1,15 @@
-package com.example.media_app
+package com.example.media_app.main
 
 
 import android.util.Log
+import com.example.media_app.People
+import com.example.media_app.ROLE
+import com.example.media_app.STATUS
+import com.example.media_app.api.PeoplePostCount
+import com.example.media_app.api.PeopleTable
+import com.example.media_app.api.PostTable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingCommand
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import org.json.JSONObject
@@ -11,6 +18,7 @@ import org.json.JSONObject
 sealed class IncomingMessage {
     data class PostsMessage(val posts: List<PostTable>): IncomingMessage()
     data class PostMessage(val post: String): IncomingMessage()
+    data class EndMessage(val command: String): IncomingMessage()
     data class PeopleMessage(val people: People): IncomingMessage()
     data class PeoplesMessage(val peoples: List<PeopleTable>): IncomingMessage()
     data class Unknown(val raw: String): IncomingMessage()
@@ -44,6 +52,11 @@ class MessageHandler(
                 if (it.contains("authorization")) {
                     Log.d("MyTag_handler", "get authorization")
                     IncomingMessage.Other(JSONObject(it))
+                }
+                else if(command =="send people end" || command=="send post end")
+                {
+                    Log.d("MyTag_handler", "end command")
+                    IncomingMessage.EndMessage(command)
                 }
                 else if(command == "send post") {
                     Log.d("MyTag_handler", "get post")

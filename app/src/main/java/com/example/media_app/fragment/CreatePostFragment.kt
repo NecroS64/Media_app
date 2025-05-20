@@ -1,28 +1,29 @@
-package com.example.media_app
+package com.example.media_app.fragment
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.RadioButton
+import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.example.media_app.MainActivity
+import com.example.media_app.MainViewModel
+import com.example.media_app.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -31,6 +32,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class CreatePostFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
+
     // TODO: Rename and change types of parameters
     private lateinit var btnPickDate: Button
     private lateinit var tvSelectedDate: TextView
@@ -38,12 +40,16 @@ class CreatePostFragment : Fragment() {
     private lateinit var tvSelectedTime: TextView
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var desi: Spinner
+    private lateinit var copy: Spinner
+    private lateinit var copyName: String
+    private lateinit var desiName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+//            param1 = it.getString(ARG_PARAM1)
+//            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -58,7 +64,10 @@ class CreatePostFragment : Fragment() {
         btnPickDate = view.findViewById<Button>(R.id.btnPickDateL)
         btnPickDate = view.findViewById(R.id.btnPickDateL)
         tvSelectedDate = view.findViewById<TextView>(R.id.tvSelectedDateL)
-
+        desi = view.findViewById(R.id.spinnerDesigner)
+        copy = view.findViewById(R.id.spinnerCopywriter)
+        setSpinnerDes(desi)
+        setSpinnerCopy(copy)
         btnPickDate.setOnClickListener {
             showDatePickerDialog(view)
         }
@@ -69,7 +78,7 @@ class CreatePostFragment : Fragment() {
             showTimePickerDialog(view)
         }
         val btnfinish = view.findViewById<Button>(R.id.button_finish)
-        btnfinish.setOnClickListener{
+        btnfinish.setOnClickListener {
             make_json(view)
 
         }
@@ -91,8 +100,8 @@ class CreatePostFragment : Fragment() {
         fun newInstance(param1: String, param2: String) =
             CreatePostFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+//                    putString(ARG_PARAM1, param1)
+//                    putString(ARG_PARAM2, param2)
                 }
             }
     }
@@ -122,11 +131,87 @@ class CreatePostFragment : Fragment() {
         }, 12, 0, true).show() // Часы, минуты, 24-часовой формат
     }
 
+    fun setSpinnerCopy(spinnerRight: Spinner) {
+        val currentList = viewModel.people.value ?: emptyList()
+        val keys = listOf("Выберите копирайтера") + currentList.map { it.name }
+
+        val adapter = object : ArrayAdapter<String>(
+            requireContext(), android.R.layout.simple_spinner_item, keys
+        ) {
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0 // отключаем первый (подсказку)
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                (view as TextView).setTextColor(if (position == 0) Color.GRAY else Color.BLACK)
+                return view
+            }
+        }
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerRight.adapter = adapter
+
+        spinnerRight.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                if (position > 0) {
+                    val key = keys[position]
+                    val value = currentList[position - 1]
+                    copyName = key
+                    Log.d("MyTag_createPeople", "Выбрано: $key -> $value")
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
+
+
+    fun setSpinnerDes(spinnerRight: Spinner) {
+        val currentList = viewModel.people.value ?: emptyList()
+        val keys = listOf("Выберите дизайнера") + currentList.map { it.name }
+
+        val adapter = object : ArrayAdapter<String>(
+            requireContext(), android.R.layout.simple_spinner_item, keys
+        ) {
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                (view as TextView).setTextColor(if (position == 0) Color.GRAY else Color.BLACK)
+                return view
+            }
+        }
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerRight.adapter = adapter
+
+        spinnerRight.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                if (position > 0) {
+                    val key = keys[position]
+                    val value = currentList[position - 1]
+                    desiName = key
+                    Log.d("MyTag_createPeople", "Выбрано: $key -> $value")
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
+
+
     private fun make_json(view: View) {
         val date = view.findViewById<TextView>(R.id.tvSelectedDateL)
         val time = view.findViewById<TextView>(R.id.tvSelectedTime)
-        val copy = view.findViewById<TextView>(R.id.Copy_name)
-        val desi = view.findViewById<TextView>(R.id.Desi_name)
+        //val copy = view.findViewById<TextView>(R.id.Copy_name)
+        //val desi = view.findViewById<TextView>(R.id.Desi_name)
+
+
         val theme = view.findViewById<TextView>(R.id.Theme_name)
         val descr = view.findViewById<TextView>(R.id.description_name)
         val tags = view.findViewById<TextView>(R.id.tags_name)
@@ -135,7 +220,7 @@ class CreatePostFragment : Fragment() {
 
 
         val json = JSONObject()
-        json.put("Command","create post")
+        json.put("Command", "create post")
         val values = JSONObject()
 
         val Date = date.text.toString()
@@ -146,8 +231,8 @@ class CreatePostFragment : Fragment() {
         val Picture = picture.text.toString()
         var ntf = 0
         if (not.isChecked) ntf = 1
-        val copywriter = JSONArray().apply { put(copy.text.toString()) }
-        val designer = JSONArray().apply { put(desi.text.toString()) }
+        val copywriter = JSONArray().apply { put(copyName) }
+        val designer = JSONArray().apply { put(desiName) }
         val tag = JSONArray().apply { put(tags.text.toString()) }
 
 
@@ -165,9 +250,9 @@ class CreatePostFragment : Fragment() {
         values.put("pict status", "red")
         values.put("notif", ntf)
 
-        json.put("Post values",values)
-        Log.d("MytagCreatePost",json.toString())
-            //tcpClient.sendJson(json.toString())
+        json.put("Post values", values)
+        Log.d("MytagCreatePost", json.toString())
+        //tcpClient.sendJson(json.toString())
         viewModel.sendMessage(json.toString())
 
     }

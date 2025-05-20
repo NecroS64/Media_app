@@ -1,12 +1,10 @@
+package com.example.media_app.api
+
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.Socket
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import androidx.annotation.Nullable
-import com.example.media_app.OnResponseReceivedListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,7 +14,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 import okhttp3.*
 import okio.ByteString
 
@@ -100,6 +97,7 @@ class WebSocketClient : IConnectable {
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             isConnectedInternal = false
             Log.d("MyTag_WS", "failure connection")
+
             if (!connectionResult.isCompleted) {
                 connectionResult.complete(false)
             }

@@ -1,7 +1,11 @@
-package com.example.media_app
+package com.example.media_app.main
 
-import IConnectable
+import com.example.media_app.api.IConnectable
 import android.util.Log
+import com.example.media_app.api.PeoplePostCount
+import com.example.media_app.api.PeopleTable
+import com.example.media_app.api.PostDAO
+import com.example.media_app.api.PostTable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 
@@ -15,7 +19,7 @@ class PostRepository(
     suspend fun connect(serverIp: String, serverPort: Int): Boolean {
         return tcpClient.connect(serverIp, serverPort)
     }
-    suspend fun addPost(post:PostTable)
+    suspend fun addPost(post: PostTable)
     {
         bd.insertPostAndUpdatePeople(post)
     }
@@ -51,7 +55,7 @@ class PeopleRepository(
     val responsesWEB: Flow<String> = tcpClient.responses.filter { it.contains("send people") }
     val responsesBDPeople: Flow<List<PeopleTable>> = bd.getAllPeople()
 
-    suspend fun addPeople(people:PeopleTable)
+    suspend fun addPeople(people: PeopleTable)
     {
         bd.Insert(people)
     }

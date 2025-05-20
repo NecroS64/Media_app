@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.media_app.LoginFragment"
+        android:name="com.example.media_app.fragment.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/postFragment"
-        android:name="com.example.media_app.PostFragment"
+        android:name="com.example.media_app.fragment.PostFragment"
         android:label="fragment_post"
         tools:layout="@layout/fragment_post" >
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/peopleFragment"
-        android:name="com.example.media_app.PeopleFragment"
+        android:name="com.example.media_app.fragment.PeopleFragment"
         android:label="fragment_people"
         tools:layout="@layout/fragment_people" >
         <action
@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/createPeopleFragment"
-        android:name="com.example.media_app.CreatePeopleFragment"
+        android:name="com.example.media_app.fragment.CreatePeopleFragment"
         android:label="fragment_create_people"
         tools:layout="@layout/fragment_create_people" >
         <action
@@ -57,7 +57,7 @@
     </fragment>
     <fragment
         android:id="@+id/createPostFragment"
-        android:name="com.example.media_app.CreatePostFragment"
+        android:name="com.example.media_app.fragment.CreatePostFragment"
         android:label="fragment_create_post"
         tools:layout="@layout/fragment_create_post" >
         <action
@@ -66,7 +66,7 @@
     </fragment>
     <fragment
         android:id="@+id/reportFragment"
-        android:name="com.example.media_app.ReportFragment"
+        android:name="com.example.media_app.fragment.ReportFragment"
         android:label="fragment_report"
         tools:layout="@layout/fragment_report" >
         <action
@@ -89,7 +89,7 @@
     </fragment>
     <fragment
         android:id="@+id/filterReportFragment"
-        android:name="com.example.media_app.FilterReportFragment"
+        android:name="com.example.media_app.fragment.FilterReportFragment"
         android:label="fragment_filter_report"
         tools:layout="@layout/fragment_filter_report" >
         <action

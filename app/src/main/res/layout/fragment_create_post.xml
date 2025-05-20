@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreatePostFragment">
+    tools:context=".fragment.CreatePostFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -55,23 +55,15 @@
                     android:layout_marginTop="16dp"
                     android:text="Выбранное время" />
 
-                <EditText
-                    android:id="@+id/Copy_name"
+                <Spinner
+                    android:id="@+id/spinnerCopywriter"
                     android:layout_width="291dp"
-                    android:layout_height="56dp"
-                    android:ems="10"
-                    android:hint="Введи имя копирайтера из КП"
-                    android:inputType="text"
-                    app:layout_constraintBottom_toTopOf="@+id/textView" />
+                    android:layout_height="56dp" />
 
-                <EditText
-                    android:id="@+id/Desi_name"
+                <Spinner
+                    android:id="@+id/spinnerDesigner"
                     android:layout_width="291dp"
-                    android:layout_height="56dp"
-                    android:ems="10"
-                    android:hint="Введи имя дизайнера из КП"
-                    android:inputType="text"
-                    app:layout_constraintBottom_toTopOf="@+id/textView" />
+                    android:layout_height="56dp" />
 
                 <EditText
                     android:id="@+id/Theme_name"

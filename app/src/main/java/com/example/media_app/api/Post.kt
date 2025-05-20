@@ -1,13 +1,9 @@
-package com.example.media_app
+package com.example.media_app.api
 
-import android.graphics.Color
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.sql.Time
-import java.util.Date
 
 
 @Entity(tableName = "post",

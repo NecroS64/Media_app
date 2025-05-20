@@ -1,11 +1,10 @@
-package com.example.media_app
+package com.example.media_app.fragment
 
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,20 +12,17 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.RadioButton
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import org.json.JSONArray
+import com.example.media_app.MainActivity
+import com.example.media_app.MainViewModel
+import com.example.media_app.R
 import org.json.JSONObject
 import vadiole.colorpicker.ColorModel
 import vadiole.colorpicker.ColorPickerDialog
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -41,7 +37,7 @@ class CreatePeopleFragment : Fragment() {
     private lateinit var btnPickTextColor: Button
     private lateinit var btnPickBackColor: Button
     private lateinit var newName: EditText
-    private lateinit var resultName:TextView
+    private lateinit var resultName: TextView
     private lateinit var role: Spinner
     private lateinit var right: Spinner
 
@@ -69,8 +65,8 @@ class CreatePeopleFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+//            param1 = it.getString(ARG_PARAM1)
+//            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -96,7 +92,7 @@ class CreatePeopleFragment : Fragment() {
         btnPickTextColor.setOnClickListener {
             setTextColor()
         }
-        newName.addTextChangedListener(object :TextWatcher{
+        newName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -135,8 +131,8 @@ class CreatePeopleFragment : Fragment() {
         fun newInstance(param1: String, param2: String) =
             CreatePeopleFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+//                    putString(ARG_PARAM1, param1)
+//                    putString(ARG_PARAM2, param2)
                 }
             }
     }
@@ -271,9 +267,9 @@ class CreatePeopleFragment : Fragment() {
         var blue = Color.blue(currentTextColor) / 255f
         var rgbTFloat = "$red:$green:$blue"
         val pass = view.findViewById<EditText>(R.id.secretCode).text
-        red = Color.red(currentTextColor) / 255f
-        green = Color.green(currentTextColor) / 255f
-        blue = Color.blue(currentTextColor) / 255f
+        red = Color.red(currentBackColor) / 255f
+        green = Color.green(currentBackColor) / 255f
+        blue = Color.blue(currentBackColor) / 255f
         var rgbBFloat = "$red:$green:$blue"
         val json = JSONObject()
         json.put("Command","register")
@@ -285,7 +281,7 @@ class CreatePeopleFragment : Fragment() {
         values.put("Back color",rgbBFloat)
         values.put("Password",pass)
         json.put("People values",values)
-        Log.d("Mytag_CreatePeople",json.toString())
+        Log.d("Mytag_CreatePeople", json.toString())
         //tcpClient.sendJson(json.toString())
         viewModel.sendMessage(json.toString())
 

@@ -1,25 +1,24 @@
-package com.example.media_app
+package com.example.media_app.fragment
 
 import android.annotation.SuppressLint
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
 import android.view.GestureDetector
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.json.JSONObject
-import java.sql.Time
+import com.example.media_app.MainActivity
+import com.example.media_app.MainViewModel
+import com.example.media_app.adapter.MyAdapterPost
+import com.example.media_app.R
 import kotlin.math.abs
-
 
 class PostFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
@@ -57,7 +56,7 @@ class PostFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_post, container, false)
         recyclerView = view.findViewById(R.id.recycle)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
-        val adapt = MyAdapterPost(emptyList(),viewModel)
+        val adapt = MyAdapterPost(emptyList(), viewModel)
         recyclerView.adapter = adapt
 
         val newPostButton = view.findViewById<Button>(R.id.newPost)
@@ -77,21 +76,22 @@ class PostFragment : Fragment() {
         })
 
         // 2. Детектор жестов
-        gestureDetector = GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
-            override fun onFling(
-                e1: MotionEvent?,
-                p1: MotionEvent,
-                velocityX: Float,
-                velocityY: Float
-            ): Boolean {
-                val deltaY = (p1?.y ?: 0f) - (e1?.y ?: 0f)
-                if (deltaY > 500 && abs(velocityY) > 400 && isAtTop) {
-                    viewModel.updatePostList()
-                    return true
+        gestureDetector =
+            GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+                override fun onFling(
+                    e1: MotionEvent?,
+                    p1: MotionEvent,
+                    velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+                    val deltaY = (p1?.y ?: 0f) - (e1?.y ?: 0f)
+                    if (deltaY > 500 && abs(velocityY) > 400 && isAtTop) {
+                        viewModel.updatePostList()
+                        return true
+                    }
+                    return false
                 }
-                return false
-            }
-        })
+            })
 
         // 3. Применяем обработчик к RecyclerView
         recyclerView.setOnTouchListener { _, event ->

@@ -1,4 +1,4 @@
-package com.example.media_app
+package com.example.media_app.api
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -10,9 +10,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import com.example.media_app.PostTable
-import com.example.media_app.PeopleTable
-import com.example.media_app.PeoplePostCount
 
 @Dao
 interface PostDAO {

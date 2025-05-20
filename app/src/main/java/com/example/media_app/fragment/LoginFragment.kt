@@ -1,7 +1,5 @@
-package com.example.media_app
+package com.example.media_app.fragment
 
-import TcpClient
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,15 +11,10 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import org.json.JSONObject
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
+import com.example.media_app.MainActivity
+import com.example.media_app.MainViewModel
+import com.example.media_app.R
 
 /**
  * A simple [Fragment] subclass.
@@ -38,8 +31,8 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+//            param1 = it.getString(ARG_PARAM1)
+//            param2 = it.getString(ARG_PARAM2)
         }
 //        val view = inflater.inflate(R.layout.fragment_login, container, false)
 
@@ -89,7 +82,7 @@ class LoginFragment : Fragment() {
 
         if (viewModel.loadUser()) {
             Log.d("MyTag_Cache", "loading cache")
-            viewModel.send_post()
+            viewModel.sendPost()
             if (activity != null && !requireActivity().isFinishing) {
                 (activity as MainActivity).add_menu()
             }
@@ -103,12 +96,3 @@ class LoginFragment : Fragment() {
         super.onDestroy()
     }
 }
-
-//                if (activity != null && !requireActivity().isFinishing) {
-//                    (activity as MainActivity).add_menu()
-//                }
-//
-//
-//
-//                view.findNavController()
-//                    .navigate(R.id.action_loginFragment_to_postFragment2)

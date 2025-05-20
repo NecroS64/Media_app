@@ -1,7 +1,6 @@
 package com.example.media_app
 
-import TcpClient
-import WebSocketClient
+import com.example.media_app.api.WebSocketClient
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -10,6 +9,7 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
@@ -17,19 +17,18 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.appbar.MaterialToolbar
+import com.example.media_app.api.AppDatabase
+import com.example.media_app.main.MessageHandler
+import com.example.media_app.main.PeopleRepository
+import com.example.media_app.main.PostRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import org.json.JSONObject
 
 
 interface OnResponseReceivedListener {
     fun onResponseReceived(response: String)
 }
 
-val ip_local = "192.168.1.112"
-//val ip_server = "138.124.109.92"
-val ip_server = "77.239.102.17"
-val ip_me = "192.168.2.114"
+
 //var pvm
 
 
@@ -40,16 +39,16 @@ class MainActivity : AppCompatActivity() {
     var flag_menu :Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var serverIp = ip_server // IP адрес сервера
-        var serverPort = 3749
-        val Client = WebSocketClient()
-        val application = requireNotNull(this).application
-        val database = AppDatabase.getInstance(application).postDao()
-        val postRepository = PostRepository(Client,database)
-        val peopleRepository = PeopleRepository(Client,database)
-        val handler = MessageHandler(postRepository,peopleRepository)
-        viewModel.setHandler(handler)
-        viewModel.connectToServer(serverIp, serverPort)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//        var serverIp = ip_server // IP адрес сервера
+//        var serverPort = 3749
+//        val Client = WebSocketClient()
+//        val application = requireNotNull(this).application
+//        val database = AppDatabase.getInstance(application).postDao()
+//        val postRepository = PostRepository(Client,database)
+//        val peopleRepository = PeopleRepository(Client,database)
+//        val handler = MessageHandler(postRepository,peopleRepository)
+
         //viewModel.sendMessage("сервер!")
         viewModel.posts.observe(this) { message ->
             //Log.d("MyTag", "Получено: $message")
@@ -94,19 +93,8 @@ class MainActivity : AppCompatActivity() {
         flag_menu =true
         findViewById<BottomNavigationView>(R.id.bottom_nav).visibility=View.GONE
     }
-    fun change_TCP_server(ip: String )
-    {
-        viewModel.disconnect()
-        val serverPort = 3749         // Порт сервера
-        viewModel.connectToServer(ip,serverPort)
-    }
 
 
-
-    override fun onDestroy() {
-        viewModel.disconnect()
-        super.onDestroy()
-    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu,menu)
         return super.onCreateOptionsMenu(menu)

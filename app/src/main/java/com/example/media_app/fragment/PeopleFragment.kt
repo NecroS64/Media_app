@@ -1,23 +1,20 @@
-package com.example.media_app
+package com.example.media_app.fragment
 
 import android.os.Bundle
 import android.util.Log
-import android.view.GestureDetector
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.example.media_app.MainActivity
+import com.example.media_app.MainViewModel
+import com.example.media_app.adapter.MyAdapterPeople
+import com.example.media_app.R
 
 /**
  * A simple [Fragment] subclass.
@@ -50,7 +47,7 @@ class PeopleFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_people, container, false)
         recyclerView = view.findViewById(R.id.recycle)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
-        val adapt = MyAdapterPeople(emptyList(),viewModel)
+        val adapt = MyAdapterPeople(emptyList(), viewModel)
         recyclerView.adapter = adapt
 
         val newPostButton = view.findViewById<Button>(R.id.newPeople)
@@ -81,8 +78,8 @@ class PeopleFragment : Fragment() {
         fun newInstance(param1: String, param2: String) =
             PeopleFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+//                    putString(ARG_PARAM1, param1)
+//                    putString(ARG_PARAM2, param2)
                 }
             }
     }
